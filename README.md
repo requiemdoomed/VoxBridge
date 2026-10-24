@@ -12,7 +12,7 @@ Speak in your language. Be heard in theirs.
 ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Transformers-FFD21E?logo=huggingface&logoColor=black)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
-**[Live demo](https://requiemdoomed.github.io/voxbridge/)** · [Features](#features) · [Run locally](#run-it-locally) 
+**[Live demo](https://requiemdoomed.github.io/VoxBridge/)** · [Features](#features) · [Run locally](#run-it-locally) 
 
 </div>
 
