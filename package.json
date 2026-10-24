@@ -1,0 +1,16 @@
+{
+  "name": "voxbridge",
+  "version": "1.0.0",
+  "description": "Front end for VoxBridge, a speech translator",
+  "author": "Swayam Shakya",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -p . --watch",
+    "test": "node --test tests/translate.test.mjs tests/voices.test.mjs && python -m unittest discover tests"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

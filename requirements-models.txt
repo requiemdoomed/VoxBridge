@@ -1,0 +1,12 @@
+# Optional on-device models. Install these to run fully offline:
+#   pip install -r requirements-models.txt
+# Whisper and Coqui also need ffmpeg on your PATH.
+-r requirements.txt
+torch
+transformers>=4.40
+sentencepiece
+sacremoses
+openai-whisper
+coqui-tts
+soundfile
+numpy

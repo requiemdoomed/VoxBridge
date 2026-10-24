@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="author" content="Swayam Shakya">
+  <meta name="description" content="VoxBridge - speak in one language, be heard in another.">
+  <title>VoxBridge · Speech Translator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28"><path d="M4 16h3M10 10v12M15 6v20M20 11v10M25 14v4M28 16h0" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </span>
+      <div>
+        <h1>VoxBridge</h1>
+        <p class="tagline">Speak your language. Be understood in theirs.</p>
+      </div>
+    </div>
+    <div class="engines" id="engines">
+      <span class="chip" id="chip-conn"><i></i>connecting…</span>
+      <span class="chip" id="chip-stt">STT: –</span>
+      <span class="chip" id="chip-mt">MT: –</span>
+      <span class="chip" id="chip-tts">TTS: –</span>
+      <button class="chip chip-btn" id="open-server" type="button" title="Connect a VoxBridge server">⚙ Server</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="speakers">
+      <!-- Person A -->
+      <article class="speaker" data-side="a">
+        <div class="speaker-head">
+          <span class="badge a">A</span>
+          <input class="who" value="You" maxlength="18" aria-label="Name of person A">
+          <select class="lang" aria-label="Language of person A"></select>
+        </div>
+        <button class="mic" type="button" aria-label="Speak">
+          <svg viewBox="0 0 24 24" width="30" height="30"><path fill="currentColor" d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg>
+          <canvas class="meter" width="120" height="120"></canvas>
+        </button>
+        <p class="hint">Tap to talk, tap again to finish</p>
+        <form class="type-box">
+          <textarea rows="2" placeholder="…or type here and press Enter" maxlength="1000"></textarea>
+          <button type="submit" class="send" aria-label="Translate typed text">Translate</button>
+        </form>
+        <div class="voice-row">
+          <label>Voice <select class="voice"></select></label>
+        </div>
+      </article>
+
+      <div class="swap-col">
+        <button id="swap" type="button" title="Swap languages" aria-label="Swap languages">⇄</button>
+      </div>
+
+      <!-- Person B -->
+      <article class="speaker" data-side="b">
+        <div class="speaker-head">
+          <span class="badge b">B</span>
+          <input class="who" value="Guest" maxlength="18" aria-label="Name of person B">
+          <select class="lang" aria-label="Language of person B"></select>
+        </div>
+        <button class="mic" type="button" aria-label="Speak">
+          <svg viewBox="0 0 24 24" width="30" height="30"><path fill="currentColor" d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg>
+          <canvas class="meter" width="120" height="120"></canvas>
+        </button>
+        <p class="hint">Tap to talk, tap again to finish</p>
+        <form class="type-box">
+          <textarea rows="2" placeholder="…or type here and press Enter" maxlength="1000"></textarea>
+          <button type="submit" class="send" aria-label="Translate typed text">Translate</button>
+        </form>
+        <div class="voice-row">
+          <label>Voice <select class="voice"></select></label>
+        </div>
+      </article>
+    </section>
+
+    <section class="settings">
+      <label class="switch"><input type="checkbox" id="auto-detect" checked><span></span>Detect spoken language</label>
+      <label class="switch"><input type="checkbox" id="auto-speak" checked><span></span>Read translations aloud</label>
+      <label class="speed">Speed <input type="range" id="speed" min="0.5" max="1.75" step="0.05" value="1"><output id="speed-out">1.00×</output></label>
+    </section>
+
+    <section class="history">
+      <div class="history-head">
+        <h2>Conversation</h2>
+        <div class="history-actions">
+          <button type="button" id="export">Save transcript</button>
+          <button type="button" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="columns-label"><span>Said</span><span>Translated</span></div>
+      <ol id="log" aria-live="polite"></ol>
+      <p class="empty" id="empty">Nothing yet. Say hello, or type something on either side.</p>
+    </section>
+  </main>
+
+  <dialog id="server-dialog">
+    <form method="dialog" id="server-form">
+      <h3>Model server</h3>
+      <p>VoxBridge runs entirely in your browser. Point it at a running <code>main.py</code> to use Whisper, MarianMT / NLLB and Coqui voices instead.</p>
+      <label>Server address
+        <input id="server-url" type="url" placeholder="http://localhost:8000" spellcheck="false">
+      </label>
+      <p class="small">Leave empty for browser-only mode.</p>
+      <div class="dialog-actions">
+        <button value="cancel" type="submit" class="ghost">Cancel</button>
+        <button value="save" type="submit" class="primary">Save &amp; reconnect</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <footer>VoxBridge · built by Swayam Shakya · 2026</footer>
+
+  <script src="static/translate.js"></script>
+  <script src="static/voices.js"></script>
+  <script src="static/app.js"></script>
+</body>
+</html>
